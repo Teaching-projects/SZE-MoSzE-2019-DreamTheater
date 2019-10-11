@@ -1,0 +1,14 @@
+
+version: 2
+jobs:
+  build_and_test:
+    machine:
+      image: ubuntu-1604:201903-01
+    steps:
+      - checkout
+      - run: g++ -std=c++11 main.cpp Directory.cpp FileSystem.cpp
+workflows:
+  version: 2
+  tasks:
+    jobs:
+      - build_and_test

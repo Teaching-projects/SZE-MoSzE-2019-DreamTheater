@@ -14,7 +14,7 @@ public:
     ~FileSystem();
     void mkdir(string);
     void ls();
-    int cd(string);
+    void cd(string);
     Directory* currentDir;
     void start();
 };
