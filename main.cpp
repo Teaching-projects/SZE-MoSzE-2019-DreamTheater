@@ -1,11 +1,12 @@
+  
 #include <iostream>
-#include "Fajlrend.h"
+#include "Filesystem.h"
 
 using namespace std;
 
 int main()
 {
-    Fajlrend f;
+    FileSystem f;
     f.start();
     return 0;
 }
