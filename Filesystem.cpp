@@ -1,5 +1,7 @@
 #include "Filesystem.h"
 #include <sstream>
+#include <vector>
+#include <map>
 
 FileSystem::FileSystem(){
 root=new Directory("root",nullptr);
@@ -7,6 +9,22 @@ currentDir=root;
 }
 FileSystem::~FileSystem(){
 delete root;
+}
+
+void FileSystem::touch(string fileName){
+    if(currentDir->getFiles().empty()){
+        //push a new file
+        currentDir->makeFile(fileName);
+        return;
+    }
+        //check that the file is already exits
+    for(auto i:currentDir->getFiles()){
+        if(i->getName()==fileName){
+            cout<<"The file is already exits"<<endl;
+            return;
+        }
+    }
+    currentDir->makeFile(fileName);
 }
 void FileSystem::mkdir(string dirName){
     if(currentDir->getSubFolder().empty()){
@@ -34,6 +52,7 @@ void FileSystem::ls(){
     cout<<""<<endl;
     return;
 }
+
 void FileSystem::cd(string a){
 if(a==".."){
     if(currentDir->getParent() == nullptr){
@@ -51,6 +70,23 @@ for(auto& i:currentDir->getSubFolder()){
 cout<< "The folder is not exits!"<< endl;
 return;
 }
+
+
+/*
+void FileSystem::inputCheck(string command, string arg){
+    if(arg == "" && command != "ls"){
+        cout<<"Invalid argument"<<endl;
+        return;
+    }
+    vector<string> setOfCommands = {"ls", "cd", "mkdir","touch"}; 
+    for(string i : setOfCommands){
+        if(i == command){
+            commandCaller(i, arg);
+        }
+    }
+    return;
+}*/
+
 void FileSystem::start(){
 string command;
 string completeCommand;
@@ -65,24 +101,20 @@ do{
     line>>arg;
         if (command=="ls")
         {
-         //call FileSystem function
+            //call FileSystem function
            this->ls();
         }
         else if (command=="cd")
         {
-            if(arg=="") cout<<"Enter the name of the folder"<<endl;
-            else{
-                this->cd(arg);
-            }
+            this->cd(arg);
         }
         else if (command=="mkdir")
         {
-            if(arg=="")
-                cout<<"The folder must be named!"<<endl;
-            else
-            {
-               this->mkdir(arg);
-            }
+            this->mkdir(arg);
+        }
+        else if (command=="touch")
+        {
+            this->touch(arg);
         }
         else cout<<"Invalid command"<<endl;
     } while (command!="quit");

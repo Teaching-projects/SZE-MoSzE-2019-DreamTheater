@@ -4,6 +4,7 @@
 #include "Directory.h"
 #include <list>
 using namespace std;
+
 class FileSystem
 {
 private:
@@ -12,11 +13,15 @@ private:
 public:
     FileSystem();
     ~FileSystem();
+    void touch(string);
     void mkdir(string);
     void ls();
     void cd(string);
+    //void inputCheck(string , string );
+    void commandCaller(string, string);
     Directory* currentDir;
     void start();
+    
 };
 
 #endif // FILESYSTEM_H

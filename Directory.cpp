@@ -1,4 +1,5 @@
 #include "Directory.h"
+#include "File.h"
 
 Directory::Directory(string n,Directory* p){
 this->name=n;
@@ -17,8 +18,15 @@ void Directory::ls(){
     for(auto i:this->getSubFolder()){
         cout<< i->getName() + "\t";
     }
+    for(auto i:this->getFiles()){
+        cout<< i->getName() + "\t";
+    }
     cout << endl;
     return;
+}
+void Directory::makeFile(string s){
+    //push a new file to the files list
+return files.push_back(new File(s));
 }
 void Directory::makefolder(string s){
     //push a new folder and set the parent to the function caller
@@ -26,6 +34,9 @@ return subFolder.push_back(new Directory(s,this));
 }
 list<Directory *> Directory::getSubFolder() const{
 return subFolder;
+}
+list<File *> Directory::getFiles() const{
+return files;
 }
 Directory *Directory::getParent() const{
 return parent;
