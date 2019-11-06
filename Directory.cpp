@@ -29,7 +29,7 @@ void Directory::makeFile(string s){
 return files.push_back(new File(s));
 }
 void Directory::makefolder(string s){
-    //push a new folder and set the parent to the function caller
+    //push a new folder and set the parent to the function caller 
 return subFolder.push_back(new Directory(s,this));
 }
 list<Directory *> Directory::getSubFolder() const{
