@@ -8,43 +8,60 @@ root=new Directory("root",nullptr);
 currentDir=root;
 }
 FileSystem::~FileSystem(){
+for(auto& i : Directorys){
+    delete i;
+}
 delete root;
 }
 
-void FileSystem::touch(string fileName){
-    if(currentDir->getFiles().empty()){
+
+void FileSystem::touch(vector <string> args){
+    if(currentDir->noFile()){
         //push a new file
-        currentDir->makeFile(fileName);
+        currentDir->makeFile(args.front());
         return;
     }
         //check that the file is already exits
-    for(auto i:currentDir->getFiles()){
-        if(i->getName()==fileName){
+    for(auto i:currentDir->getFile()){
+        if(i->getName()==args.front()){
             cout<<"The file is already exits"<<endl;
             return;
         }
     }
-    currentDir->makeFile(fileName);
+    currentDir->makeFile(args.front());
 }
-void FileSystem::mkdir(string dirName){
-    if(currentDir->getSubFolder().empty()){
+
+void FileSystem::rm(vector <string> args){
+    if(currentDir->noSubfolder()){  
+        cout << "The directory is not exits!"<< endl;
+        return;
+    }
+    if(!currentDir->searchDir(args.front())->getSubFolder().empty()){
+        cout << "The directory has content in it!"<< endl;
+        return;
+    }
+    currentDir->remove(args.front());
+}
+
+void FileSystem::mkdir(vector <string> args){
+    if(currentDir->noSubfolder()){
         //push a new subfolder
-        currentDir->makefolder(dirName);
+        currentDir->makefolder(args.front());
         return;
     }
     //check that the dir is already exits
     for(auto i:currentDir->getSubFolder()){
-        if(i->getName()==dirName){
+        if(i->getName()==args.front()){
             cout<<"The directory is already exits"<<endl;
             return;
         }
     }
-    currentDir->makefolder(dirName);
+    currentDir->makefolder(args.front());
     return;
 }
 
-void FileSystem::ls(){
-    if(!currentDir->getSubFolder().empty()){
+void FileSystem::ls(vector <string> s){
+    if(!currentDir->noSubfolder()){
         //call Directory class function
         currentDir->ls();
         return;
@@ -53,8 +70,8 @@ void FileSystem::ls(){
     return;
 }
 
-void FileSystem::cd(string a){
-if(a==".."){
+void FileSystem::cd(vector <string> args){
+if(args.front() == ".."){
     if(currentDir->getParent() == nullptr){
         return;
     }
@@ -62,7 +79,7 @@ if(a==".."){
     return;
 }
 for(auto& i:currentDir->getSubFolder()){
-    if(i->getName()==a){
+    if(i->getName()==args.front()){
     currentDir=i;
     return;
     }
@@ -88,21 +105,27 @@ void FileSystem::inputCheck(string command, string arg){
 }*/
 
 void FileSystem::start(){
-string command;
-string completeCommand;
-string arg;
-do{
-    cout<<"~";
-    getline(cin,completeCommand);
-    istringstream line(completeCommand);
-    command=arg="";
-    //sets the strings from line
-    line>>command;
-    line>>arg;
+    vector <string> arg;
+    string inputHelper;
+    string command;
+    do{
+        cout<<"~";
+        getline(cin,inputHelper);
+        istringstream line(inputHelper);
+        command="";
+        line>>command;
+        while(line){
+            line >> inputHelper;
+
+            cout << endl;
+            cout << "The args is: "<< inputHelper;
+
+            arg.push_back(inputHelper);
+        };
+        //sets the strings from line
         if (command=="ls")
         {
-            //call FileSystem function
-           this->ls();
+            this->ls(arg);
         }
         else if (command=="cd")
         {
@@ -111,6 +134,10 @@ do{
         else if (command=="mkdir")
         {
             this->mkdir(arg);
+        }
+        else if (command=="rm")
+        {
+            this->rm(arg);
         }
         else if (command=="touch")
         {

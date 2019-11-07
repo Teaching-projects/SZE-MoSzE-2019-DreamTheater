@@ -18,12 +18,26 @@ void Directory::ls(){
     for(auto i:this->getSubFolder()){
         cout<< i->getName() + "\t";
     }
-    for(auto i:this->getFiles()){
+    for(auto i:this->getFile()){
         cout<< i->getName() + "\t";
     }
     cout << endl;
     return;
 }
+Directory* Directory::searchDir(string s){
+    for(auto& i : subFolder){
+        if(i->getName() == s){
+            return i;
+        }
+    }
+}
+
+void Directory::remove(string s){
+    Directory* searchedDir = searchDir(s);
+    delete searchedDir;
+    return ;
+}
+
 void Directory::makeFile(string s){
     //push a new file to the files list
 return files.push_back(new File(s));
@@ -35,9 +49,22 @@ return subFolder.push_back(new Directory(s,this));
 list<Directory *> Directory::getSubFolder() const{
 return subFolder;
 }
-list<File *> Directory::getFiles() const{
+list<File *> Directory::getFile() const{
 return files;
 }
 Directory *Directory::getParent() const{
 return parent;
+}
+
+bool Directory::noSubfolder(){
+    if(getSubFolder().empty()){
+        return true;
+    }
+    return false;
+}
+bool Directory::noFile(){
+    if(getFile().empty()){
+        return true;
+    }
+    return false;
 }
