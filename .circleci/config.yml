@@ -6,7 +6,7 @@ jobs:
       image: ubuntu-1604:201903-01
     steps:
       - checkout
-      - run: g++ -std=c++11 main.cpp Directory.cpp Filesystem.cpp
+      - run: g++ -std=c++11 main.cpp Directory.cpp Filesystem.cpp File.cpp
 workflows:
   version: 2
   tasks:

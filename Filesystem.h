@@ -20,7 +20,7 @@ public:
     void mkdir(vector <string>);
     void ls(vector <string>);
     void cd(vector <string>);
-    //void inputCheck(string , string );
+    bool inputCheck(string , string );
     void commandCaller(string, string);
     Directory* currentDir;
     void start();

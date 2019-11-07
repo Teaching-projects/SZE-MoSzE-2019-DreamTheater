@@ -30,11 +30,23 @@ Directory* Directory::searchDir(string s){
             return i;
         }
     }
+    return nullptr;
 }
-
+File* Directory::searchFile(string s){
+    for(auto& i : getFile()){
+        if(i->getName() == s){
+            return i;
+        }
+    }
+    return nullptr;
+}
 void Directory::remove(string s){
     Directory* searchedDir = searchDir(s);
-    delete searchedDir;
+    cout<< searchedDir->getName()<< endl;
+    if(searchedDir != nullptr){
+        delete searchedDir;
+        subFolder.remove(searchedDir);
+    }
     return ;
 }
 

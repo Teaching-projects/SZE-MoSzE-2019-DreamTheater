@@ -24,6 +24,7 @@ public:
     ~Directory();
     string getName() const;
     Directory* searchDir(string);
+    File* searchFile(string);
     void ls();
     void remove(string);
     void makefolder(string);

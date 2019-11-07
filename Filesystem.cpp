@@ -36,7 +36,7 @@ void FileSystem::rm(vector <string> args){
         cout << "The directory is not exits!"<< endl;
         return;
     }
-    if(!currentDir->searchDir(args.front())->getSubFolder().empty()){
+    if(!currentDir->searchDir(args.front())->noSubfolder()){
         cout << "The directory has content in it!"<< endl;
         return;
     }
@@ -89,60 +89,65 @@ return;
 }
 
 
-/*
-void FileSystem::inputCheck(string command, string arg){
+
+bool FileSystem::inputCheck(string command, string arg){
     if(arg == "" && command != "ls"){
         cout<<"Invalid argument"<<endl;
-        return;
+        return false;
     }
-    vector<string> setOfCommands = {"ls", "cd", "mkdir","touch"}; 
+    vector<string> setOfCommands = {"ls", "cd", "mkdir","touch", "rm"}; 
     for(string i : setOfCommands){
         if(i == command){
-            commandCaller(i, arg);
+            //here we can call later the command function***********
+            return true;
         }
     }
-    return;
-}*/
+    cout << "Invalid command!"<< endl;
+    return false;
+}
 
 void FileSystem::start(){
     vector <string> arg;
     string inputHelper;
     string command;
     do{
+        cout<<"User: "<< currentDir->getName()<< endl;
         cout<<"~";
         getline(cin,inputHelper);
         istringstream line(inputHelper);
         command="";
-        line>>command;
+        arg.clear();
         while(line){
+            inputHelper = "";
             line >> inputHelper;
-
-            cout << endl;
-            cout << "The args is: "<< inputHelper;
-
             arg.push_back(inputHelper);
         };
+        command = arg.front();
+        //clear the vector empty parts because of the istringstream
+        arg.erase(arg.begin());
+        arg.erase(arg.end());
         //sets the strings from line
-        if (command=="ls")
-        {
-            this->ls(arg);
+        if(inputCheck(command, arg.front())){
+            if (command=="ls")
+            {
+                this->ls(arg);
+            }
+            else if (command=="cd")
+            {
+                this->cd(arg);
+            }
+            else if (command=="mkdir")
+            {
+                this->mkdir(arg);
+            }
+            else if (command=="rm")
+            {
+                this->rm(arg);
+            }
+            else if(command=="touch")
+            {
+                this->touch(arg);
+            }
         }
-        else if (command=="cd")
-        {
-            this->cd(arg);
-        }
-        else if (command=="mkdir")
-        {
-            this->mkdir(arg);
-        }
-        else if (command=="rm")
-        {
-            this->rm(arg);
-        }
-        else if (command=="touch")
-        {
-            this->touch(arg);
-        }
-        else cout<<"Invalid command"<<endl;
     } while (command!="quit");
 }
