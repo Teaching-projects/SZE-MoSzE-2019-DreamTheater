@@ -7,6 +7,7 @@ jobs:
     steps:
       - checkout
       - run: g++ -std=c++11 main.cpp Directory.cpp Filesystem.cpp File.cpp
+      - run: ./a.out < test.txt > output.txt      
 workflows:
   version: 2
   tasks:

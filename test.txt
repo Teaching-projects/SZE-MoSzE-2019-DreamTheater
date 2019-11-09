@@ -1,0 +1,15 @@
+ls
+cd test
+ls test
+mkdir test
+mkdir test2
+touch file
+touch file2
+cd test
+touch file
+mkdir test
+ls
+cd ..
+rm test
+rm test2
+quit

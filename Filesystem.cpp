@@ -119,7 +119,7 @@ void FileSystem::start(){
     string inputHelper;
     string command;
     do{
-        cout<<"User: "<< currentDir->getName()<< endl;
+        cout<<"Comerick@: "<< currentDir->getName()<< endl;
         cout<<"~";
         getline(cin,inputHelper);
         istringstream line(inputHelper);
