@@ -6,7 +6,7 @@ this->name=n;
 this->parent=p;
 }
 Directory::~Directory(){
-for(auto& i:subFolder){
+for(auto& i:subFolders){
     delete i;
 }
 }
@@ -15,17 +15,17 @@ return name;
 }
 void Directory::ls(){
     //Loop though the current directory subfolders and list them
-    for(auto i:this->getSubFolder()){
+    for(auto i:this->getSubFolders()){
         cout<< i->getName() + "\t";
     }
-    for(auto i:this->getFile()){
+    for(auto i:this->getFiles()){
         cout<< i->getName() + "\t";
     }
     cout << endl;
     return;
 }
-Directory* Directory::searchDir(string s){
-    for(auto& i : subFolder){
+Directory* Directory::searchDir(string s) const{
+    for(auto& i : subFolders){
         if(i->getName() == s){
             return i;
         }
@@ -33,50 +33,39 @@ Directory* Directory::searchDir(string s){
     return nullptr;
 }
 File* Directory::searchFile(string s){
-    for(auto& i : getFile()){
+    for(auto& i : getFiles()){
         if(i->getName() == s){
             return i;
         }
     }
     return nullptr;
 }
-void Directory::remove(string s){
-    Directory* searchedDir = searchDir(s);
-    cout<< searchedDir->getName()<< endl;
-    if(searchedDir != nullptr){
-        delete searchedDir;
-        subFolder.remove(searchedDir);
+void Directory::remove(Directory * s){
+    if(s != nullptr){
+        delete s;
+        subFolders.remove(s);
+        return;
+    } else {
+        cout << "The directory is not exits!"<< endl;
+        return;
     }
-    return ;
 }
-
 void Directory::makeFile(string s){
     //push a new file to the files list
-return files.push_back(new File(s));
+files.push_back(new File(s));
+return;
 }
 void Directory::makefolder(string s){
     //push a new folder and set the parent to the function caller 
-return subFolder.push_back(new Directory(s,this));
+subFolders.push_back(new Directory(s,this));
+return;
 }
-list<Directory *> Directory::getSubFolder() const{
-return subFolder;
+list<Directory *> Directory::getSubFolders() const{
+return subFolders;
 }
-list<File *> Directory::getFile() const{
+list<File *> Directory::getFiles() const{
 return files;
 }
 Directory *Directory::getParent() const{
 return parent;
-}
-
-bool Directory::noSubfolder(){
-    if(getSubFolder().empty()){
-        return true;
-    }
-    return false;
-}
-bool Directory::noFile(){
-    if(getFile().empty()){
-        return true;
-    }
-    return false;
 }

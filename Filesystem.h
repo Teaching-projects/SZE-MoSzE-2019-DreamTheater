@@ -9,7 +9,7 @@ using namespace std;
 class FileSystem
 {
 private:
-    list <Directory*> Directorys;
+    list <Directory*> listOfFolders;
     Directory* root;
 
 public:
@@ -24,6 +24,8 @@ public:
     void commandCaller(string, string);
     Directory* currentDir;
     void start();
+    bool hasFile(string);
+    bool hasDir(string);
     
 };
 

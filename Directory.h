@@ -14,7 +14,7 @@ class Directory
 private:
     string name;
     Directory* parent;
-    list <Directory*> subFolder;
+    list <Directory*> subFolders;
     list <File*> files;
     
 public:
@@ -23,14 +23,14 @@ public:
     Directory(string,Directory*);
     ~Directory();
     string getName() const;
-    Directory* searchDir(string);
+    Directory* searchDir(string) const;
     File* searchFile(string);
     void ls();
-    void remove(string);
+    void remove(Directory *);
     void makefolder(string);
     void makeFile(string);
-    list <Directory *> getSubFolder() const;
-    list <File *> getFile() const;
+    list <Directory *> getSubFolders() const;
+    list <File *> getFiles() const;
     Directory* getParent() const;
 };
 
