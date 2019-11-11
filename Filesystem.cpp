@@ -1,32 +1,80 @@
 #include "Filesystem.h"
 #include <sstream>
+#include <vector>
+#include <map>
 
 FileSystem::FileSystem(){
 root=new Directory("root",nullptr);
 currentDir=root;
 }
 FileSystem::~FileSystem(){
+for(auto& i : listOfFolders){
+    delete i;
+}
 delete root;
 }
-void FileSystem::mkdir(string dirName){
-    if(currentDir->getSubFolder().empty()){
+bool FileSystem::hasDir(string arg){
+    for(auto i:currentDir->getSubFolders()){
+        if(i->getName()==arg)return true;
+    }
+    return false;
+}
+bool FileSystem::hasFile(string arg){
+    for(auto i:currentDir->getFiles()){
+        if(i->getName()==arg)return true;
+    }
+    return false;
+}
+
+
+void FileSystem::touch(vector <string> args){
+    bool hasD = hasDir(args.front());
+    bool hasF = hasFile(args.front());
+    if(hasD || hasF){
+        if(hasD){
+            cout<<"There is already a folder with this name!"<<endl;
+            return;
+        }
+        if(hasF){
+            cout<<"The file is already exits!"<<endl;
+            return;
+        }
+    }
+    currentDir->makeFile(args.front());
+    return;
+}
+
+void FileSystem::rm(vector <string> args){
+    if(currentDir->getSubFolders().empty()){  
+        cout << "The directory is not exits!"<< endl;
+        return;
+    }
+    if(!currentDir->searchDir(args.front())->getSubFolders().empty()){
+        cout << "The directory has content in it!"<< endl;
+        return;
+    }
+    currentDir->remove(currentDir->searchDir(args.front()));
+}
+
+void FileSystem::mkdir(vector <string> args){
+    if(currentDir->getSubFolders().empty()){
         //push a new subfolder
-        currentDir->makefolder(dirName);
+        currentDir->makefolder(args.front());
         return;
     }
     //check that the dir is already exits
-    for(auto i:currentDir->getSubFolder()){
-        if(i->getName()==dirName){
+    for(auto i:currentDir->getSubFolders()){
+        if(i->getName()==args.front()){
             cout<<"The directory is already exits"<<endl;
             return;
         }
     }
-    currentDir->makefolder(dirName);
+    currentDir->makefolder(args.front());
     return;
 }
 
-void FileSystem::ls(){
-    if(!currentDir->getSubFolder().empty()){
+void FileSystem::ls(vector <string> s){
+    if(!currentDir->getSubFolders().empty()){
         //call Directory class function
         currentDir->ls();
         return;
@@ -34,56 +82,80 @@ void FileSystem::ls(){
     cout<<""<<endl;
     return;
 }
-void FileSystem::cd(string a){
-if(a==".."){
-    if(currentDir->getParent() == nullptr){
+
+void FileSystem::cd(vector <string> args){
+    if(args.front() == ".."){
+        if(currentDir->getParent() == nullptr){
+            return;
+        }
+        currentDir=currentDir->getParent();
         return;
     }
-    currentDir=currentDir->getParent();
-    return;
-}
-for(auto& i:currentDir->getSubFolder()){
-    if(i->getName()==a){
-    currentDir=i;
-    return;
+    if(hasDir(args.front())){
+        currentDir = currentDir->searchDir(args.front());
+        return;
     }
-}
 cout<< "The folder is not exits!"<< endl;
 return;
 }
-void FileSystem::start(){
-string command;
-string completeCommand;
-string arg;
-do{
-    cout<<"~";
-    getline(cin,completeCommand);
-    istringstream line(completeCommand);
-    command=arg="";
-    //sets the strings from line
-    line>>command;
-    line>>arg;
-        if (command=="ls")
-        {
-         //call FileSystem function
-           this->ls();
+
+bool FileSystem::inputCheck(string command, string arg){
+    if(arg == "" && command != "ls"){
+        cout<<"Invalid argument"<<endl;
+        return false;
+    }
+    vector<string> setOfCommands = {"ls", "cd", "mkdir","touch", "rm"}; 
+    for(string i : setOfCommands){
+        if(i == command){
+            return true;
         }
-        else if (command=="cd")
-        {
-            if(arg=="") cout<<"Enter the name of the folder"<<endl;
-            else{
+    }
+    cout << "Invalid command!"<< endl;
+    return false;
+}
+
+void FileSystem::start(){
+    vector <string> arg;
+    string inputHelper;
+    string command;
+    do{
+        cout<<"Comerick@: "<< currentDir->getName()<< endl;
+        cout<<"~";
+        getline(cin,inputHelper);
+        istringstream line(inputHelper);
+        command="";
+        arg.clear();
+        while(line){
+            inputHelper = "";
+            line >> inputHelper;
+            arg.push_back(inputHelper);
+        };
+        command = arg.front();
+        //clear the vector empty parts because of the istringstream
+        arg.erase(arg.begin());
+        arg.erase(arg.end());
+        //sets the strings from line
+        if(inputCheck(command, arg.front())){
+            if (command=="ls")
+            {
+                this->ls(arg);
+            }
+            else if (command=="cd")
+            {
                 this->cd(arg);
             }
-        }
-        else if (command=="mkdir")
-        {
-            if(arg=="")
-                cout<<"The folder must be named!"<<endl;
-            else
+            else if (command=="mkdir")
             {
-               this->mkdir(arg);
+                this->mkdir(arg);
+            }
+            else if (command=="rm")
+            {
+                this->rm(arg);
+            }
+            else if(command=="touch")
+            {
+                this->touch(arg);
             }
         }
-        else cout<<"Invalid command"<<endl;
     } while (command!="quit");
 }

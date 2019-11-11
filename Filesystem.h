@@ -3,20 +3,30 @@
 
 #include "Directory.h"
 #include <list>
+#include <vector>
 using namespace std;
+
 class FileSystem
 {
 private:
-    list <Directory*> Directorys;
+    list <Directory*> listOfFolders;
     Directory* root;
+
 public:
     FileSystem();
     ~FileSystem();
-    void mkdir(string);
-    void ls();
-    void cd(string);
+    void rm(vector <string>);
+    void touch(vector <string>);
+    void mkdir(vector <string>);
+    void ls(vector <string>);
+    void cd(vector <string>);
+    bool inputCheck(string , string );
+    void commandCaller(string, string);
     Directory* currentDir;
     void start();
+    bool hasFile(string);
+    bool hasDir(string);
+    
 };
 
 #endif // FILESYSTEM_H

@@ -3,6 +3,9 @@
 #include <iostream>
 #include <string>
 #include <list>
+
+#include "File.h"
+
 using namespace std;
 
 class Directory
@@ -11,15 +14,24 @@ class Directory
 private:
     string name;
     Directory* parent;
-    list <Directory*> subFolder;
+    list <Directory*> subFolders;
+    list <File*> files;
+    
 public:
+    bool noSubfolder();
+    bool noFile();
     Directory(string,Directory*);
     ~Directory();
     string getName() const;
+    Directory* searchDir(string) const;
+    File* searchFile(string);
     void ls();
+    void remove(Directory *);
     void makefolder(string);
-    list<Directory *> getSubFolder() const;
-    Directory *getParent() const;
+    void makeFile(string);
+    list <Directory *> getSubFolders() const;
+    list <File *> getFiles() const;
+    Directory* getParent() const;
 };
 
 #endif // DIRECTORY_H
