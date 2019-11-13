@@ -25,23 +25,30 @@ bool FileSystem::hasFile(string arg){
     }
     return false;
 }
-
-
-void FileSystem::touch(vector <string> args){
-    bool hasD = hasDir(args.front());
-    bool hasF = hasFile(args.front());
+bool FileSystem::checkDocsExits(string docName){
+    bool hasD = hasDir(docName);
+    bool hasF = hasFile(docName);
     if(hasD || hasF){
         if(hasD){
             cout<<"There is already a folder with this name!"<<endl;
-            return;
+            return true;
         }
         if(hasF){
             cout<<"The file is already exits!"<<endl;
-            return;
+            return true;
         }
     }
-    currentDir->makeFile(args.front());
-    return;
+    return false;
+}
+
+void FileSystem::touch(vector <string> args){
+    bool docExits = checkDocsExits(args.front());
+    if(!docExits){
+        currentDir->makeFile(args.front());
+    }
+    else {
+        return;
+    }
 }
 
 void FileSystem::rm(vector <string> args){
@@ -57,29 +64,16 @@ void FileSystem::rm(vector <string> args){
 }
 
 void FileSystem::mkdir(vector <string> args){
-    if(currentDir->getSubFolders().empty()){
-        //push a new subfolder
+    bool docExits = checkDocsExits(args.front());
+    if(!docExits){
         currentDir->makefolder(args.front());
+    }else {
         return;
     }
-    //check that the dir is already exits
-    for(auto i:currentDir->getSubFolders()){
-        if(i->getName()==args.front()){
-            cout<<"The directory is already exits"<<endl;
-            return;
-        }
-    }
-    currentDir->makefolder(args.front());
-    return;
 }
 
 void FileSystem::ls(vector <string> s){
-    if(!currentDir->getSubFolders().empty()){
-        //call Directory class function
-        currentDir->ls();
-        return;
-    }
-    cout<<""<<endl;
+    currentDir->ls();
     return;
 }
 
