@@ -25,30 +25,30 @@ bool FileSystem::hasFile(string arg){
     }
     return false;
 }
-bool FileSystem::checkDocsExits(string docName){
+bool FileSystem::checkDocsExits(string docName, bool tender = false){
     bool hasD = hasDir(docName);
     bool hasF = hasFile(docName);
-    if(hasD || hasF){
         if(hasD){
-            cout<<"There is already a folder with this name!"<<endl;
+            if(tender){
+                cout<<"There is already a folder with this name!"<<endl;
+            }
             return true;
         }
         if(hasF){
-            cout<<"The file is already exits!"<<endl;
+            if(tender){
+                cout<<"The file is already exits!"<<endl;
+            }
             return true;
-        }
     }
     return false;
 }
 
 void FileSystem::touch(vector <string> args){
-    bool docExits = checkDocsExits(args.front());
+    bool docExits = checkDocsExits(args.front(), true);
     if(!docExits){
         currentDir->makeFile(args.front());
     }
-    else {
         return;
-    }
 }
 
 void FileSystem::rm(vector <string> args){
@@ -64,12 +64,12 @@ void FileSystem::rm(vector <string> args){
 }
 
 void FileSystem::mkdir(vector <string> args){
-    bool docExits = checkDocsExits(args.front());
+    bool docExits = checkDocsExits(args.front(), true);
     if(!docExits){
         currentDir->makefolder(args.front());
-    }else {
-        return;
     }
+    return;
+
 }
 
 void FileSystem::ls(vector <string> s){

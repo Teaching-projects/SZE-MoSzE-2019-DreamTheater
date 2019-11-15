@@ -26,7 +26,7 @@ public:
     void start();
     bool hasFile(string);
     bool hasDir(string);
-    bool checkDocsExits(string);
+    bool checkDocsExits(string, bool);
     
 };
 
