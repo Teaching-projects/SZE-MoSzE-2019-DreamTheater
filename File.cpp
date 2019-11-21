@@ -12,3 +12,9 @@ File::~File(){}
 string File::getName() const {
     return name;
 }
+string File::getContent() const {
+    return content;
+}
+void File::setContent(string s){
+    content = s;
+}

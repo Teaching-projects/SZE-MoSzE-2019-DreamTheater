@@ -6,12 +6,20 @@ this->name=n;
 this->parent=p;
 }
 Directory::~Directory(){
-for(auto& i:subFolders){
-    delete i;
-}
+    for(auto& i:subFolders){
+        delete i;
+    }
+    for(auto& i: files){
+        delete i;
+    }
 }
 string Directory::getName() const{
 return name;
+}
+void Directory::echo(string content, string filename){
+    File * file = searchFile(filename);
+    file->setContent(content);
+    return;
 }
 void Directory::ls(){
     //Loop though the current directory subfolders and list them
@@ -24,7 +32,7 @@ void Directory::ls(){
     cout << endl;
     return;
 }
-Directory* Directory::searchDir(string s) const{
+Directory* Directory::searchDir(string s){
     for(auto& i : subFolders){
         if(i->getName() == s){
             return i;
@@ -42,7 +50,6 @@ File* Directory::searchFile(string s){
 }
 void Directory::remove(Directory * s){
     if(s != nullptr){
-        delete s;
         subFolders.remove(s);
         return;
     } else {
