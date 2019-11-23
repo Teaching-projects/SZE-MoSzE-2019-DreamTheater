@@ -49,6 +49,8 @@ File* Directory::searchFile(string s){
     return nullptr;
 }
 void Directory::remove(Directory * s){
+    cout << s << endl;
+    cin.get();
     if(s != nullptr){
         subFolders.remove(s);
         return;

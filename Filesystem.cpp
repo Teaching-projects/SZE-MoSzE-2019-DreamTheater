@@ -70,15 +70,18 @@ void FileSystem::touch(string arg){
 }
 
 void FileSystem::rm(string arg){
-    if(currentDir->getSubFolders().empty()){  
+    if(currentDir->getSubFolders().empty() || currentDir->searchDir(arg)== nullptr){  
         cout << "The directory is not exits!"<< endl;
         return;
     }
+    cout << arg<< endl;
+    cin.get();
     if(!currentDir->searchDir(arg)->getSubFolders().empty()){
         cout << "The directory has content in it!"<< endl;
         return;
     }
     currentDir->remove(currentDir->searchDir(arg));
+    return;
 }
 
 void FileSystem::mkdir(string arg){
@@ -224,6 +227,8 @@ void FileSystem::start(){
             {
                 completedCommand = true;
                 inputHelper = followPath(args[0], true);
+                cout << inputHelper<< endl;
+                cin.get();
                 if(inputHelper != ""){
                     rm(inputHelper);
                 }
