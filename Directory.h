@@ -28,7 +28,7 @@ public:
     void ls();
     void remove(Directory *);
     void makefolder(string);
-    void makeFile(string);
+    File * makeFile(string);
     void echo(string, string);
     list <Directory *> getSubFolders() const;
     list <File *> getFiles() const;

@@ -19,7 +19,7 @@ return name;
 void Directory::echo(string content, string filename){
     File * file = searchFile(filename);
     if(file == nullptr){
-        makeFile(filename);
+        file = makeFile(filename);
         file->setContent(content);
     } else {
         file->setContent(content);
@@ -27,11 +27,11 @@ void Directory::echo(string content, string filename){
 }
 void Directory::ls(){
     //Loop though the current directory subfolders and list them
-    for(auto i:this->getSubFolders()){
+    for(auto i:getSubFolders()){
         cout<< i->getName() + "\t";
     }
-    for(auto i:this->getFiles()){
-        cout<< i->getName() + "\t";
+    for(auto k:getFiles()){
+        cout<< k->getName() + "\t";
     }
     cout << endl;
     return;
@@ -59,10 +59,11 @@ void Directory::remove(Directory * s){
         cout << "The directory is not exits!"<< endl;
     }
 }
-void Directory::makeFile(string s){
+File * Directory::makeFile(string s){
     //push a new file to the files list
-files.push_back(new File(s));
-return;
+    File * f = new File(s);
+    files.push_back(f);
+return f;
 }
 void Directory::makefolder(string s){
     //push a new folder and set the parent to the function caller 
