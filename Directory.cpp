@@ -54,7 +54,7 @@ File* Directory::searchFile(string s) const{
 }
 void Directory::remove(Directory * s){
     if(s != nullptr){
-        delete s;
+        subFolders.remove(s);
     } else {
         cout << "The directory is not exits!"<< endl;
     }

@@ -216,8 +216,6 @@ void FileSystem::start(){
             {
                 completedCommand = true;
                 inputHelper = followPath(args[0], true);
-                cout << inputHelper<< endl;
-                cin.get();
                 if(inputHelper != ""){
                     rm(inputHelper);
                 }
