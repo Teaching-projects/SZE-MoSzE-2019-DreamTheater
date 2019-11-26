@@ -3,6 +3,7 @@
 #include <iostream>
 #include <string>
 #include <list>
+#include <vector>
 
 #include "File.h"
 
@@ -28,6 +29,7 @@ public:
     void ls();
     void remove(Directory *);
     void makefolder(string);
+    bool validFileFormat(string);
     void makeFile(string);
     void echo(string, string);
     list <Directory *> getSubFolders() const;

@@ -161,6 +161,12 @@ string FileSystem::followPath(string path, bool needLastArg = false){
     }
     return returnLastArg;
 }
+/*
+bool FileSystem::loadFile(string command){
+    
+
+}
+*/
 
 bool FileSystem::inputCheck(string command, vector <string> arg){
     if(arg.empty() && command != "ls"){
@@ -198,7 +204,7 @@ void FileSystem::start(){
         //clear the vector empty parts because of the istringstream
         args.erase(args.begin());
         args.erase(args.end());
-        //sets the strings from line
+        //loadFile(command);
         if(inputCheck(command, args)){
             completedCommand = false;
             if (command=="ls")

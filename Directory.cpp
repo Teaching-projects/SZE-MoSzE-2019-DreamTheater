@@ -57,9 +57,24 @@ void Directory::remove(Directory * s){
         return;
     }
 }
+bool Directory::validFileFormat(string s){
+    vector <string> validFormats= {"json","xml"};
+    s = s.erase(0,s.find('.')+1);
+    cout<< s<< endl;
+    for(string i : validFormats){
+        if(i == s){
+            return true;
+        }
+    }
+    return false;
+}
 void Directory::makeFile(string s){
-    //push a new file to the files list
-files.push_back(new File(s));
+    if(validFileFormat(s)){
+        //push a new file to the files list
+        files.push_back(new File(s));
+    } else {
+        cout << "Invalid file format!"<<endl;
+    }
 return;
 }
 void Directory::makefolder(string s){

@@ -15,6 +15,7 @@ private:
 public:
     FileSystem();
     ~FileSystem();
+    //bool loadFile(string);
     string followPath(string, bool);
     void echo(string, string);
     void rm(string);
