@@ -15,7 +15,7 @@ private:
 public:
     FileSystem();
     ~FileSystem();
-    //bool loadFile(string);
+    bool loadFile(string);
     string followPath(string, bool);
     void echo(string, string);
     void rm(string);
@@ -23,7 +23,7 @@ public:
     void mkdir(string);
     void ls();
     bool cd(string);
-    bool inputCheck(string , vector<string> );
+    bool inputCheck(string , vector<string>, bool );
     Directory* currentDir;
     void start();
     bool hasFile(string);

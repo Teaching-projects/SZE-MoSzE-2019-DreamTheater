@@ -161,14 +161,29 @@ string FileSystem::followPath(string path, bool needLastArg = false){
     }
     return returnLastArg;
 }
-/*
+
 bool FileSystem::loadFile(string command){
-    
-
+    File* loadedFile = currentDir->searchFile(command);
+    string line, lineHelper = "";
+    bool exit = true;
+    if(loadedFile != nullptr){
+        cout << loadedFile->getContent() << '\r' << flush;
+        do{
+            getline(cin,line);
+            lineHelper = line;
+            if(line.erase(0,line.size()-4) == "exit"){
+                exit = false;
+                lineHelper = lineHelper.substr(0, lineHelper.size()-4);
+            }  
+        } while(exit);
+        loadedFile->setContent(lineHelper);        
+        return true;
+    }
+    return false;
 }
-*/
 
-bool FileSystem::inputCheck(string command, vector <string> arg){
+bool FileSystem::inputCheck(string command, vector <string> arg, bool isloaded){
+    if(isloaded) return true;
     if(arg.empty() && command != "ls"){
         cout<<"Invalid argument"<<endl;
         return false;
@@ -188,6 +203,7 @@ void FileSystem::start(){
     string inputHelper;
     string command;
     bool completedCommand;
+    bool fileLoaded;
     do{
         cout<<"Comerick@: "<< currentDir->getName()<< endl;
         cout<<"~";
@@ -204,9 +220,9 @@ void FileSystem::start(){
         //clear the vector empty parts because of the istringstream
         args.erase(args.begin());
         args.erase(args.end());
-        //loadFile(command);
-        if(inputCheck(command, args)){
-            completedCommand = false;
+        fileLoaded = loadFile(command);
+        if(inputCheck(command, args, fileLoaded)){
+            (fileLoaded) ? completedCommand = true : completedCommand = false;
             if (command=="ls")
             {
                 completedCommand = true;

@@ -60,7 +60,6 @@ void Directory::remove(Directory * s){
 bool Directory::validFileFormat(string s){
     vector <string> validFormats= {"json","xml"};
     s = s.erase(0,s.find('.')+1);
-    cout<< s<< endl;
     for(string i : validFormats){
         if(i == s){
             return true;
