@@ -13,6 +13,17 @@ for(auto& i : listOfFolders){
 }
 delete root;
 }
+
+string pop_front(vector<string> &v)
+{
+    string s = "";
+    if (v.size() > 0) {
+        s = v.front();
+        v.erase(v.begin());
+    }
+    return s;
+}
+
 bool FileSystem::hasDir(string arg){
     for(auto i:currentDir->getSubFolders()){
         if(i->getName()==arg)return true;
@@ -25,11 +36,18 @@ bool FileSystem::hasFile(string arg){
     }
     return false;
 }
+void FileSystem::echo(string content, string filename){
+    bool hasD = hasDir(filename);
+    if(hasD){
+        cout <<"Invalid filename!"<<endl;
+    } else {
+        currentDir->echo(content, filename);      
+    }
+}
 
-
-void FileSystem::touch(vector <string> args){
-    bool hasD = hasDir(args.front());
-    bool hasF = hasFile(args.front());
+void FileSystem::touch(string arg){
+    bool hasD = hasDir(arg);
+    bool hasF = hasFile(arg);
     if(hasD || hasF){
         if(hasD){
             cout<<"There is already a folder with this name!"<<endl;
@@ -40,71 +58,103 @@ void FileSystem::touch(vector <string> args){
             return;
         }
     }
-    currentDir->makeFile(args.front());
+    currentDir->makeFile(arg);
     return;
 }
 
-void FileSystem::rm(vector <string> args){
-    if(currentDir->getSubFolders().empty()){  
+void FileSystem::rm(string arg){
+    Directory * argPointer = currentDir->searchDir(arg);
+    if(currentDir->getSubFolders().empty() || argPointer == nullptr){  
         cout << "The directory is not exits!"<< endl;
         return;
     }
-    if(!currentDir->searchDir(args.front())->getSubFolders().empty()){
+    if(!argPointer->getSubFolders().empty()){
         cout << "The directory has content in it!"<< endl;
         return;
     }
-    currentDir->remove(currentDir->searchDir(args.front()));
+    currentDir->remove(argPointer);
 }
 
-void FileSystem::mkdir(vector <string> args){
+void FileSystem::mkdir(string arg){
     if(currentDir->getSubFolders().empty()){
         //push a new subfolder
-        currentDir->makefolder(args.front());
+        currentDir->makefolder(arg);
         return;
     }
     //check that the dir is already exits
     for(auto i:currentDir->getSubFolders()){
-        if(i->getName()==args.front()){
+        if(i->getName()==arg){
             cout<<"The directory is already exits"<<endl;
             return;
         }
     }
-    currentDir->makefolder(args.front());
-    return;
+    currentDir->makefolder(arg);
 }
 
-void FileSystem::ls(vector <string> s){
-    if(!currentDir->getSubFolders().empty()){
-        //call Directory class function
-        currentDir->ls();
-        return;
-    }
-    cout<<""<<endl;
-    return;
+void FileSystem::ls(){
+    currentDir->ls();
 }
 
-void FileSystem::cd(vector <string> args){
-    if(args.front() == ".."){
+bool FileSystem::cd(string dir){
+    if(dir == ".."){
         if(currentDir->getParent() == nullptr){
-            return;
+            return false;
         }
         currentDir=currentDir->getParent();
-        return;
+        return true;
     }
-    if(hasDir(args.front())){
-        currentDir = currentDir->searchDir(args.front());
-        return;
+    if(hasDir(dir)){
+        currentDir = currentDir->searchDir(dir);
+        return true;
     }
-cout<< "The folder is not exits!"<< endl;
-return;
+cout<< "The "<< dir <<" folder is not exits!"<< endl;
+return false;
+}
+vector <string> FileSystem::processPath(string path){
+    vector<string> addedPath;
+    string temp = "";
+    for(auto& i: path){
+        if(i != '/'){
+            temp += i;
+        } else {
+            if(temp != ""){
+                addedPath.push_back(temp);
+                temp = "";
+            }
+        }
+    }
+    if (temp != "") addedPath.push_back(temp);
+    return addedPath;
+}
+string FileSystem::followPath(string path, bool needLastArg = false){
+    string s = "";
+    Directory * start = currentDir;
+    if(path == "/"){
+        currentDir = root;
+        return "/";
+    }
+    //this decide that path is absolute
+    if(path[0] == '/') currentDir = root;
+    vector<string> slicedPath = processPath(path); 
+    string returnLastArg = slicedPath.back();
+    //remove last arg which can be a file or dir
+    if(needLastArg) slicedPath.pop_back();
+    while(!slicedPath.empty()){
+        if(!this->cd(pop_front(slicedPath))){
+            currentDir = start;
+            cout << "Invalid path!"<<endl;
+            return "";
+        }
+    }
+    return returnLastArg;
 }
 
-bool FileSystem::inputCheck(string command, string arg){
-    if(arg == "" && command != "ls"){
+bool FileSystem::inputCheck(string command, vector <string> arg){
+    if(arg.empty() && command != "ls"){
         cout<<"Invalid argument"<<endl;
         return false;
     }
-    vector<string> setOfCommands = {"ls", "cd", "mkdir","touch", "rm"}; 
+    vector<string> setOfCommands = {"ls", "cd", "mkdir","touch", "rm", "echo"}; 
     for(string i : setOfCommands){
         if(i == command){
             return true;
@@ -115,47 +165,76 @@ bool FileSystem::inputCheck(string command, string arg){
 }
 
 void FileSystem::start(){
-    vector <string> arg;
+    vector <string> args;
     string inputHelper;
     string command;
+    bool completedCommand;
     do{
         cout<<"Comerick@: "<< currentDir->getName()<< endl;
         cout<<"~";
         getline(cin,inputHelper);
         istringstream line(inputHelper);
         command="";
-        arg.clear();
+        args.clear();
         while(line){
             inputHelper = "";
             line >> inputHelper;
-            arg.push_back(inputHelper);
+            args.push_back(inputHelper);
         };
-        command = arg.front();
+        command = args.front();
         //clear the vector empty parts because of the istringstream
-        arg.erase(arg.begin());
-        arg.erase(arg.end());
+        args.erase(args.begin());
+        args.erase(args.end());
         //sets the strings from line
-        if(inputCheck(command, arg.front())){
+        if(inputCheck(command, args)){
+            completedCommand = false;
             if (command=="ls")
             {
-                this->ls(arg);
+                completedCommand = true;
+                if(args.size() == 1)followPath(args[0]);
+                ls();
             }
-            else if (command=="cd")
+            else if (command=="cd" && args.size() == 1)
             {
-                this->cd(arg);
+                completedCommand = true;
+                followPath(args[0]);
             }
-            else if (command=="mkdir")
+            else if (command=="mkdir" && args.size() == 1)
             {
-                this->mkdir(arg);
+                completedCommand = true;
+                inputHelper = followPath(args[0], true);
+                if(inputHelper != ""){
+                    mkdir(inputHelper);
+                }
             }
-            else if (command=="rm")
+            else if (command=="rm" && args.size() == 1 )
             {
-                this->rm(arg);
+                completedCommand = true;
+                inputHelper = followPath(args[0], true);
+                if(inputHelper != ""){
+                    rm(inputHelper);
+                }
             }
-            else if(command=="touch")
+            else if(command=="touch" && args.size() == 1)
             {
-                this->touch(arg);
+                completedCommand = true;
+                inputHelper = followPath(args[0], true);
+                if(inputHelper != ""){
+                    touch(inputHelper);
+                }
             }
+            else if(command=="echo" && args.size() <= 2 ){
+                completedCommand = true;
+                if(args.size() == 1) {
+                    cout << "Need more argument to use this command! Echo sytanx: echo <content> <destination>"<<endl;
+                } else {
+                    inputHelper = followPath(args[1], true);
+                    if(inputHelper != ""){
+                        echo(args[0], inputHelper);
+                    }
+                }
+            }
+            if(!completedCommand)cout << "Too many arguments!"<< endl;
         }
     } while (command!="quit");
 }

@@ -15,17 +15,19 @@ private:
 public:
     FileSystem();
     ~FileSystem();
-    void rm(vector <string>);
-    void touch(vector <string>);
-    void mkdir(vector <string>);
-    void ls(vector <string>);
-    void cd(vector <string>);
-    bool inputCheck(string , string );
-    void commandCaller(string, string);
+    string followPath(string, bool);
+    void echo(string, string);
+    void rm(string);
+    void touch(string);
+    void mkdir(string);
+    void ls();
+    bool cd(string);
+    bool inputCheck(string , vector<string> );
     Directory* currentDir;
     void start();
     bool hasFile(string);
     bool hasDir(string);
+    vector<string> processPath(string);
     
 };
 

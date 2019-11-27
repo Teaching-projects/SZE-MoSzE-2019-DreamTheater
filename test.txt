@@ -11,5 +11,23 @@ mkdir test
 ls
 cd ..
 rm test
-rm test2
+mkdir test
+mkdir test/testinside
+mkdir /test/testinside2
+ls
+rm /test/testinside2
+rm /test/testinside2wrong
+rm test/testinside
+ls
+rm testinside
+cd ..
+echo file
+echo content file
+echo content test/fileinside
+echo content /test/fileinside
+echo content test/fileinside
+cd ..
+ls test
+cd ..
+ls /test/testwrong
 quit
