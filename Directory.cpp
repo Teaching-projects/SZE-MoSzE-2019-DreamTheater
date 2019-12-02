@@ -57,11 +57,6 @@ void Directory::remove(Directory * s){
         return;
     }
 }
-template <typename T>
-void Directory::move(T moved){
-
-}
-
 bool Directory::validFileFormat(string s){
     vector <string> validFormats= {"json","xml"};
     s = s.erase(0,s.find('.')+1);
@@ -79,12 +74,10 @@ void Directory::makeFile(string s){
     } else {
         cout << "Invalid file format!"<<endl;
     }
-return;
 }
 void Directory::makefolder(string s){
     //push a new folder and set the parent to the function caller 
 subFolders.push_back(new Directory(s,this));
-return;
 }
 list<Directory *> Directory::getSubFolders() const{
 return subFolders;

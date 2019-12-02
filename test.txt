@@ -15,4 +15,15 @@ rm test2
 touch file.xml
 file.xml
 testinthefileexit
+mkdir test123
+mv file.xml test123
+touch file.xml
+mv file.xml test123
+ls
+cd test123
+mkdir test
+cd ..
+mv file.xml test123/test
+mkdir test321
+mv test321 test123
 quit
