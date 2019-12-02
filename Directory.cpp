@@ -57,6 +57,11 @@ void Directory::remove(Directory * s){
         return;
     }
 }
+template <typename T>
+void Directory::move(T moved){
+
+}
+
 bool Directory::validFileFormat(string s){
     vector <string> validFormats= {"json","xml"};
     s = s.erase(0,s.find('.')+1);
@@ -90,3 +95,7 @@ return files;
 Directory *Directory::getParent() const{
 return parent;
 }
+void Directory::setParent(Directory* setParent){
+parent = setParent;
+}
+

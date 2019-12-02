@@ -139,7 +139,7 @@ vector <string> FileSystem::processPath(string path){
     if (temp != "") addedPath.push_back(temp);
     return addedPath;
 }
-string FileSystem::followPath(string path, bool needLastArg = false){
+string FileSystem::followPath(string path, bool needLastArg = false, bool startFromCurrenDir = false){
     string s = "";
     Directory * start = currentDir;
     if(path == "/"){
@@ -159,6 +159,7 @@ string FileSystem::followPath(string path, bool needLastArg = false){
             return "";
         }
     }
+    if(startFromCurrenDir = true) currentDir = start;
     return returnLastArg;
 }
 
@@ -188,7 +189,7 @@ bool FileSystem::inputCheck(string command, vector <string> arg, bool isloaded){
         cout<<"Invalid argument"<<endl;
         return false;
     }
-    vector<string> setOfCommands = {"ls", "cd", "mkdir","touch", "rm", "echo"}; 
+    vector<string> setOfCommands = {"ls", "cd", "mkdir","touch", "rm", "echo", "mv"}; 
     for(string i : setOfCommands){
         if(i == command){
             return true;
@@ -196,6 +197,80 @@ bool FileSystem::inputCheck(string command, vector <string> arg, bool isloaded){
     }
     cout << "Invalid command!"<< endl;
     return false;
+}
+template<typename T>
+void deleteFromList(list<T*> items, T* target){
+    typename list<T*>::iterator i = items.begin();
+    while (i != items.end())
+    {
+        if (*i ==  target)
+        {
+            items.erase(i++);  // alternatively, i = items.erase(i), delete and increase its value after;
+        }
+        else
+        {
+            ++i;
+        }
+    }
+}
+void FileSystem::mv(string moved, string movedTo){
+    Directory * startFromHere = currentDir;
+    string movedLastArg = moved;
+    string movedToLastArg = movedTo;
+
+    Directory * movedPointerDir = nullptr;
+    File * movedPointerFile = nullptr;
+    Directory * movedToPointer = nullptr;
+
+    //We are in the first arg currentDir
+    movedLastArg = followPath(movedLastArg, true);
+    //decide if folder or file 
+    if(hasDir(movedLastArg)){
+        movedPointerDir = currentDir->searchDir(movedLastArg);
+        //delete from list
+        deleteFromList(currentDir->getSubFolders(),movedPointerDir);
+        //currentDir->getSubFolders().erase(find(currentDir->getSubFolders().begin(), currentDir->getSubFolders().end(), movedPointerDir));
+
+    } else if(hasFile(movedLastArg)){
+        movedPointerFile = currentDir->searchFile(movedLastArg);
+        //delete from list
+        deleteFromList(currentDir->getFiles(),movedPointerFile);
+        //currentDir->getFiles().erase(find(currentDir->getFiles().begin(), currentDir->getFiles().end(), movedPointerFile));
+    }
+    currentDir = startFromHere;
+    //bababaab
+    //We are in the second arg currentDir
+    movedToLastArg = followPath(movedToLastArg, true);
+    if(movedPointerDir != nullptr){
+        //if destination is valid
+        if(hasDir(movedToLastArg)){
+            movedPointerDir->setParent(movedToPointer);
+            movedToPointer->getSubFolders().push_back(movedPointerDir);
+        } else {
+            //if destination is invalid move to currentDir
+            cout<< "Set the name of the folder from" << movedLastArg << "to: ";
+            cin >> movedLastArg;
+            movedPointerDir->setName(movedLastArg);
+            movedPointerDir->setParent(currentDir);
+            currentDir->getSubFolders().push_back(movedPointerDir);
+        }
+    } else if(movedPointerFile != nullptr) {
+        //cannot move the file/or dir with the same name in subfolders or files
+        //valid the file name    bool validFileFormat(string);!!!! 1.
+        if(hasFile(movedTo)){
+            movedToPointer->getFiles().push_back(movedPointerFile);
+        } else {
+            currentDir->getFiles().push_back(movedPointerFile);
+        }
+    }
+    currentDir = startFromHere;
+    return;
+    /*If the second argument is a path to an existing directory
+    , move the file/directory of the first argument into the directory of the second arg
+    ument. 
+    
+    If the second is a non-existing node, but its parent is, then move the file/dir to that 
+    parent and rename it with that new name.*/
 }
 
 void FileSystem::start(){
@@ -267,6 +342,21 @@ void FileSystem::start(){
                     if(inputHelper != ""){
                         echo(args[0], inputHelper);
                     }
+                }
+            }
+            else if(command=="mv" && args.size() <= 2)
+            {
+                if(args.size() == 1) {
+                cout << "Need more argument to use this command! mv sytanx: mv <path to a file/directory> <destination>"<<endl;
+                } else{
+                    completedCommand = true;
+                    inputHelper = followPath(args[0], false, true);
+                    if(inputHelper == "") return;
+                    inputHelper = followPath(args[1], true, true);
+                    if(inputHelper == "") return;
+                    //add back the poped last string
+                    args[1]+='/'+inputHelper;
+                    mv(args[0], args[1]);
                 }
             }
             if(!completedCommand)cout << "Too many arguments!"<< endl;
