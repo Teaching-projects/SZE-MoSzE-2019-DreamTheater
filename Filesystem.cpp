@@ -100,13 +100,7 @@ void FileSystem::mkdir(string arg){
 }
 
 void FileSystem::ls(){
-    if(!currentDir->getSubFolders().empty()){
-        //call Directory class function
-        currentDir->ls();
-        return;
-    }
-    cout<<""<<endl;
-    return;
+    currentDir->ls();
 }
 
 bool FileSystem::cd(string folder){
