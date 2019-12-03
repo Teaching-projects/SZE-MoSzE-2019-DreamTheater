@@ -23,12 +23,12 @@ public:
     Directory(string,Directory*);
     ~Directory();
     string getName() const;
-    Directory* searchDir(string);
-    File* searchFile(string);
+    Directory* searchDir(string) const;
+    File* searchFile(string) const;
     void ls();
     void remove(Directory *);
     void makefolder(string);
-    void makeFile(string);
+    File * makeFile(string);
     void echo(string, string);
     list <Directory *> getSubFolders() const;
     list <File *> getFiles() const;

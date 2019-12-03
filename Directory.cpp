@@ -18,21 +18,25 @@ return name;
 }
 void Directory::echo(string content, string filename){
     File * file = searchFile(filename);
-    file->setContent(content);
-    return;
+    if(file == nullptr){
+        file = makeFile(filename);
+        file->setContent(content);
+    } else {
+        file->setContent(content);
+    }
 }
 void Directory::ls(){
     //Loop though the current directory subfolders and list them
-    for(auto i:this->getSubFolders()){
+    for(auto i:getSubFolders()){
         cout<< i->getName() + "\t";
     }
-    for(auto i:this->getFiles()){
-        cout<< i->getName() + "\t";
+    for(auto k:getFiles()){
+        cout<< k->getName() + "\t";
     }
     cout << endl;
     return;
 }
-Directory* Directory::searchDir(string s){
+Directory* Directory::searchDir(string s) const{
     for(auto& i : subFolders){
         if(i->getName() == s){
             return i;
@@ -40,7 +44,7 @@ Directory* Directory::searchDir(string s){
     }
     return nullptr;
 }
-File* Directory::searchFile(string s){
+File* Directory::searchFile(string s) const{
     for(auto& i : getFiles()){
         if(i->getName() == s){
             return i;
@@ -51,16 +55,15 @@ File* Directory::searchFile(string s){
 void Directory::remove(Directory * s){
     if(s != nullptr){
         subFolders.remove(s);
-        return;
     } else {
         cout << "The directory is not exits!"<< endl;
-        return;
     }
 }
-void Directory::makeFile(string s){
+File * Directory::makeFile(string s){
     //push a new file to the files list
-files.push_back(new File(s));
-return;
+    File * f = new File(s);
+    files.push_back(f);
+return f;
 }
 void Directory::makefolder(string s){
     //push a new folder and set the parent to the function caller 

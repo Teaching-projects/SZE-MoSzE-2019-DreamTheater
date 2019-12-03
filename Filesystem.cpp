@@ -16,8 +16,9 @@ delete root;
 
 string pop_front(vector<string> &v)
 {
-    string s = v.front();
+    string s = "";
     if (v.size() > 0) {
+        s = v.front();
         v.erase(v.begin());
     }
     return s;
@@ -36,19 +37,11 @@ bool FileSystem::hasFile(string arg){
     return false;
 }
 void FileSystem::echo(string content, string filename){
-    bool hasF = hasFile(filename);
     bool hasD = hasDir(filename);
     if(hasD){
         cout <<"Invalid filename!"<<endl;
-        return;
     } else {
-        if(hasF){
-            currentDir->echo(content, filename);
-        }else {
-            currentDir->makeFile(filename);
-            currentDir->echo(content, filename);
-        }
-        return;
+        currentDir->echo(content, filename);      
     }
 }
 
@@ -70,15 +63,16 @@ void FileSystem::touch(string arg){
 }
 
 void FileSystem::rm(string arg){
-    if(currentDir->getSubFolders().empty()){  
+    Directory * argPointer = currentDir->searchDir(arg);
+    if(currentDir->getSubFolders().empty() || argPointer == nullptr){  
         cout << "The directory is not exits!"<< endl;
         return;
     }
-    if(!currentDir->searchDir(arg)->getSubFolders().empty()){
+    if(!argPointer->getSubFolders().empty()){
         cout << "The directory has content in it!"<< endl;
         return;
     }
-    currentDir->remove(currentDir->searchDir(arg));
+    currentDir->remove(argPointer);
 }
 
 void FileSystem::mkdir(string arg){
@@ -95,17 +89,10 @@ void FileSystem::mkdir(string arg){
         }
     }
     currentDir->makefolder(arg);
-    return;
 }
 
 void FileSystem::ls(){
-    if(!currentDir->getSubFolders().empty()){
-        //call Directory class function
-        currentDir->ls();
-        return;
-    }
-    cout<<""<<endl;
-    return;
+    currentDir->ls();
 }
 
 bool FileSystem::cd(string dir){
