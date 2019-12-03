@@ -13,3 +13,4 @@ workflows:
   tasks:
     jobs:
       - build_and_test
+      - docs-build
