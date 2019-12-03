@@ -18,9 +18,9 @@ jobs:
             cd docs
             doxygen Doxyfile
       - persist_to_workspace:
+          root: .
           paths:
-            - xml
-            - gh-pages
+            - docs
   build_and_test:
     machine:
       image: ubuntu-1604:201903-01
