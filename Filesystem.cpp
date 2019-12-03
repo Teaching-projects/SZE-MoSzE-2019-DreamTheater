@@ -100,7 +100,7 @@ void FileSystem::mkdir(string arg){
 }
 
 void FileSystem::ls(){
-    if(!currentDir->getSubFolders().empty()){
+    if(!currentDir->getSubFolders().empty() && !currentDir->getFiles().empty()){
         //call Directory class function
         currentDir->ls();
         return;
