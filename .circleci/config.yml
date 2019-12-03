@@ -1,5 +1,6 @@
 
 version: 2
+
 jobs:
   build_and_test:
     machine:
@@ -7,10 +8,27 @@ jobs:
     steps:
       - checkout
       - run: g++ -std=c++11 main.cpp Directory.cpp Filesystem.cpp File.cpp
-      - run: ./a.out < test.txt > output.txt      
+      - run: ./a.out < test.txt > output.txt
+  build_docs:
+    docker:
+      - image: circleci/python:3.6
+    steps:
+      - checkout
+      - run:
+          name: Build
+          command: |
+            chmod +x ./doxygen/make.sh
+            ./doxygen/make.sh
+            mkdir /tmp/doxygen
+            cp -v ./doxygen/*.md /tmp/doxygen
+      
+      - persist_to_workspace:
+          root: /tmp
+          paths:
+            - doxygen
 workflows:
   version: 2
   tasks:
     jobs:
       - build_and_test
-      - docs-build
+      - build-docs
