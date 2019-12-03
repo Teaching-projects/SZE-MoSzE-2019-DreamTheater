@@ -16,6 +16,7 @@ jobs:
           command: |
             mkdir docs
             cd docs
+            doxygen -g Doxyfile
             doxygen Doxyfile
       - persist_to_workspace:
           root: .
