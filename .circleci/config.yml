@@ -1,7 +1,31 @@
 
 version: 2
-
 jobs:
+  doxygen:
+    docker:
+      - image: circleci/python:3.7
+    steps:
+      - checkout
+      - run:
+          name: Dependencies
+          command: |
+            sudo apt install doxygen
+            sudo python3 -m pip install jinja2
+      - run:
+          name: Generate
+          command: |
+            cd example
+            doxygen Doxyfile
+            cd ..
+            mkdir -p /tmp/gh-pages
+            cp -rf ./example/temp/xml /tmp/xml
+            cp -rf ./example/temp/html /tmp/gh-pages/original
+            cp ./example/index.html /tmp/gh-pages/index.html
+      - persist_to_workspace:
+          root: /tmp
+          paths:
+            - xml
+            - gh-pages
   build_and_test:
     machine:
       image: ubuntu-1604:201903-01
@@ -9,26 +33,9 @@ jobs:
       - checkout
       - run: g++ -std=c++11 main.cpp Directory.cpp Filesystem.cpp File.cpp
       - run: ./a.out < test.txt > output.txt
-  build_docs:
-    docker:
-      - image: circleci/python:3.6
-    steps:
-      - checkout
-      - run:
-          name: Build
-          command: |
-            chmod +x ./doxygen/make.sh
-            ./doxygen/make.sh
-            mkdir /tmp/doxygen
-            cp -v ./doxygen/*.md /tmp/doxygen
-      
-      - persist_to_workspace:
-          root: /tmp
-          paths:
-            - doxygen
 workflows:
   version: 2
   tasks:
     jobs:
+      - doxygen
       - build_and_test
-      - build-docs
