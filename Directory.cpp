@@ -74,12 +74,10 @@ void Directory::makeFile(string s){
     } else {
         cout << "Invalid file format!"<<endl;
     }
-return;
 }
 void Directory::makefolder(string s){
     //push a new folder and set the parent to the function caller 
 subFolders.push_back(new Directory(s,this));
-return;
 }
 list<Directory *> Directory::getSubFolders() const{
 return subFolders;
@@ -90,3 +88,7 @@ return files;
 Directory *Directory::getParent() const{
 return parent;
 }
+void Directory::setParent(Directory* setParent){
+parent = setParent;
+}
+

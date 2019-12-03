@@ -35,6 +35,7 @@ bool FileSystem::hasFile(string arg){
     }
     return false;
 }
+
 void FileSystem::echo(string content, string filename){
     bool hasF = hasFile(filename);
     bool hasD = hasDir(filename);
@@ -102,19 +103,19 @@ void FileSystem::ls(){
     currentDir->ls();
 }
 
-bool FileSystem::cd(string dir){
-    if(dir == ".."){
+bool FileSystem::cd(string folder){
+    if(folder == ".."){
         if(currentDir->getParent() == nullptr){
             return false;
         }
-        currentDir=currentDir->getParent();
+        currentDir = currentDir->getParent();
         return true;
     }
-    if(hasDir(dir)){
-        currentDir = currentDir->searchDir(dir);
+    if(hasDir(folder)){
+        currentDir = currentDir->searchDir(folder);
         return true;
     }
-cout<< "The "<< dir <<" folder is not exits!"<< endl;
+cout<< "The "<< folder <<" folder is not exits!"<< endl;
 return false;
 }
 vector <string> FileSystem::processPath(string path){
@@ -133,8 +134,7 @@ vector <string> FileSystem::processPath(string path){
     if (temp != "") addedPath.push_back(temp);
     return addedPath;
 }
-string FileSystem::followPath(string path, bool needLastArg = false){
-    string s = "";
+string FileSystem::followPath(string path, bool needLastArg = false, bool startFromCurrentDir = false){
     Directory * start = currentDir;
     if(path == "/"){
         currentDir = root;
@@ -153,6 +153,7 @@ string FileSystem::followPath(string path, bool needLastArg = false){
             return "";
         }
     }
+    if(startFromCurrentDir == true) {currentDir = start;}
     return returnLastArg;
 }
 
@@ -182,7 +183,7 @@ bool FileSystem::inputCheck(string command, vector <string> arg, bool isloaded){
         cout<<"Invalid argument"<<endl;
         return false;
     }
-    vector<string> setOfCommands = {"ls", "cd", "mkdir","touch", "rm", "echo"}; 
+    vector<string> setOfCommands = {"ls", "cd", "mkdir","touch", "rm", "echo", "mv"}; 
     for(string i : setOfCommands){
         if(i == command){
             return true;
@@ -190,6 +191,89 @@ bool FileSystem::inputCheck(string command, vector <string> arg, bool isloaded){
     }
     cout << "Invalid command!"<< endl;
     return false;
+}
+template<typename T>
+list<T*> deleteFromList(list<T*> items, T* target){
+    typename list<T*>::iterator i = items.begin();
+    while (i != items.end())
+    {
+        if (*i ==  target)
+        {
+            items.erase(i++);  // alternatively, i = items.erase(i), delete and increase its value after;
+        }
+        else
+        {
+            ++i;
+        }
+    }
+    return items;
+}
+void FileSystem::mv(string movedPath, string destinationPath){
+    Directory * startFromHere = currentDir;
+    string moved, destination;
+    Directory * movedPointerDir = nullptr;
+    File * movedPointerFile = nullptr;
+    Directory * movedToPointer = nullptr;
+
+    moved = followPath(movedPath, true);
+    //decide if folder or file 
+    if(hasDir(moved)){
+        movedPointerDir = currentDir->searchDir(moved);
+        //delete from list
+        currentDir->setSubFolders(deleteFromList(currentDir->getSubFolders(),movedPointerDir));
+    } else if(hasFile(moved)){
+        movedPointerFile = currentDir->searchFile(moved);
+        //delete from list
+        currentDir->setFiles(deleteFromList(currentDir->getFiles(),movedPointerFile));
+    } else {
+        cout << "The folder or file that you want to move is not exits!"<<endl;
+        currentDir = startFromHere;
+        return;
+    }
+    currentDir = startFromHere;
+    destination = followPath(destinationPath, true);
+    movedToPointer = currentDir->searchDir(destination);
+    if(movedPointerDir != nullptr){
+        //cannot move the folder with the same name to the subfolders
+        if(movedToPointer != nullptr && movedToPointer->searchDir(moved) == nullptr){
+            movedPointerDir->setParent(movedToPointer);
+            movedToPointer->addFolder(movedPointerDir);
+        } else if(!hasDir(moved)){
+            //if destination is invalid move to currentDir
+            cout<< "Set the name of the folder from " << moved << " to: ";
+            getline(cin,moved);
+            movedPointerDir->setName(moved);
+            movedPointerDir->setParent(currentDir);
+            currentDir->addFolder(movedPointerDir);
+        } else {
+            //set back the deleted folder
+            followPath(movedPath, true);
+            currentDir->addFolder(movedPointerDir);
+            cout << "The folder is already exits at the destination!"<<endl;
+        }
+    } else if(movedPointerFile != nullptr) {
+        //cannot move the file with the same name to the files list
+        if(movedToPointer != nullptr && movedToPointer->searchFile(moved) == nullptr){
+            movedToPointer->addFile(movedPointerFile);
+        } else if(!hasFile(moved)){
+            //if destination is invalid move to currentDir
+            cout<< "Set the name of the file from " << moved << " to: ";
+            getline(cin,moved);
+            //valid the fileformat
+            if(!currentDir->validFileFormat(moved)){
+                cout << "Invalid file format!"<<endl;
+                return;
+            }
+            movedPointerFile->setName(moved);
+            currentDir->addFile(movedPointerFile);
+        } else {
+            //set back deleted file
+            followPath(movedPath, true);
+            currentDir->addFolder(movedPointerDir);
+            cout << "The file is already exits at the destination!"<<endl;
+        }
+    }
+    currentDir = startFromHere;
 }
 
 void FileSystem::start(){
@@ -260,6 +344,22 @@ void FileSystem::start(){
                     inputHelper = followPath(args[1], true);
                     if(inputHelper != ""){
                         echo(args[0], inputHelper);
+                    }
+                }
+            }
+            else if(command=="mv" && args.size() <= 2)
+            {
+                if(args.size() == 1) {
+                cout << "Need more argument to use this command! mv sytanx: mv <path to a file/directory> <destination>"<<endl;
+                } else{
+                    completedCommand = true;
+                    inputHelper = followPath(args[0], true, true);
+                    if(inputHelper != ""){
+                        //add back the poped last string
+                        inputHelper = followPath(args[1], true, true);
+                        if(inputHelper != ""){
+                            mv(args[0], args[1]);
+                        }
                     }
                 }
             }
