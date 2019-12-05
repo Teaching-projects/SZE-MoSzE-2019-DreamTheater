@@ -37,19 +37,20 @@ bool FileSystem::hasFile(string arg){
 }
 
 void FileSystem::echo(string content, string filename){
-    bool hasF = hasFile(filename);
+    File * file = currentDir->searchFile(filename);
     bool hasD = hasDir(filename);
     if(hasD){
         cout <<"Invalid filename!"<<endl;
         return;
     } else {
-        if(hasF){
-            currentDir->echo(content, filename);
+        if(file != nullptr){
+            currentDir->echo(content, file);
         }else {
-            currentDir->makeFile(filename);
-            currentDir->echo(content, filename);
+            File * newfile = currentDir->makeFile(filename);
+            if( newfile != nullptr) {
+                currentDir->echo(content, newfile);
+            }
         }
-        return;
     }
 }
 
@@ -67,7 +68,6 @@ void FileSystem::touch(string arg){
         }
     }
     currentDir->makeFile(arg);
-    return;
 }
 
 void FileSystem::rm(string arg){
@@ -96,7 +96,6 @@ void FileSystem::mkdir(string arg){
         }
     }
     currentDir->makefolder(arg);
-    return;
 }
 
 void FileSystem::ls(){
@@ -355,7 +354,6 @@ void FileSystem::start(){
                     completedCommand = true;
                     inputHelper = followPath(args[0], true, true);
                     if(inputHelper != ""){
-                        //add back the poped last string
                         inputHelper = followPath(args[1], true, true);
                         if(inputHelper != ""){
                             mv(args[0], args[1]);

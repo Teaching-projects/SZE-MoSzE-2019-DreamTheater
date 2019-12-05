@@ -16,10 +16,8 @@ Directory::~Directory(){
 string Directory::getName() const{
 return name;
 }
-void Directory::echo(string content, string filename){
-    File * file = searchFile(filename);
+void Directory::echo(string content, File * file){
     file->setContent(content);
-    return;
 }
 void Directory::ls(){
     //Loop though the current directory subfolders and list them
@@ -67,12 +65,15 @@ bool Directory::validFileFormat(string s){
     }
     return false;
 }
-void Directory::makeFile(string s){
+File* Directory::makeFile(string s){
     if(validFileFormat(s)){
         //push a new file to the files list
-        files.push_back(new File(s));
+        File * f = new File(s);
+        files.push_back(f);
+        return f;
     } else {
         cout << "Invalid file format!"<<endl;
+        return nullptr;
     }
 }
 void Directory::makefolder(string s){

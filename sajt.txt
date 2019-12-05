@@ -1,0 +1,28 @@
+void FileSystem::echo(string content, string filename){
+    File * file = currentDir->searchFile(filename);
+    bool hasD = hasDir(filename);
+    if(hasD){
+        cout <<"Invalid filename!"<<endl;
+        return;
+    } else {
+        if(file != nullptr){
+            currentDir->echo(content, file);
+        }else {
+            File * newfile = currentDir->makeFile(filename);
+            if( newfile != nullptr) {
+                currentDir->echo(content, newfile);
+            }
+        }
+    }
+}
+File* Directory::makeFile(string s){
+    if(validFileFormat(s)){
+        //push a new file to the files list
+        File * f = new File(s);
+        files.push_back(f);
+        return f;
+    } else {
+        cout << "Invalid file format!"<<endl;
+        return nullptr;
+    }
+}

@@ -29,10 +29,10 @@ public:
     void remove(Directory *);
     void makefolder(string);
     bool validFileFormat(string);
-    void makeFile(string);
+    File * makeFile(string);
     void addFolder(Directory * f){subFolders.push_back(f);};
     void addFile(File * f){files.push_back(f);};
-    void echo(string, string);
+    void echo(string, File *);
     list <Directory *> getSubFolders() const;
     void setSubFolders(list<Directory *> l){subFolders = l;};
     void setFiles(list<File *> f){files = f;};
