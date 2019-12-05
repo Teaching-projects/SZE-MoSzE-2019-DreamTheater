@@ -47,10 +47,4 @@ workflows:
     jobs:
       - build_and_test
       - doxygen-gen
-      - doxygen-deploy:
-        requires:
-          - build_and_test
-          - doxygen-gen
-        filters:
-          branches:
-            only: master
+      - doxygen-deploy
