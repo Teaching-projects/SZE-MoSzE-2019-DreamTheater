@@ -1,15 +1,28 @@
-
 version: 2
 jobs:
+  doxygen:
+    description: "Generating documention"
+    docker:
+      - image: comerick/terminal:1.2
+    steps:
+      - checkout
+      - run:
+          name: Generate
+          command: |
+              mkdir docs
+              cd docs
+              doxygen -g Doxyfile
+              doxygen Doxyfile
   build_and_test:
     machine:
       image: ubuntu-1604:201903-01
     steps:
       - checkout
       - run: g++ -std=c++11 main.cpp Directory.cpp Filesystem.cpp File.cpp
-      - run: ./a.out < test.txt > output.txt      
+      - run: ./a.out < test.txt > output.txt
 workflows:
   version: 2
   tasks:
     jobs:
       - build_and_test
+      - doxygen
