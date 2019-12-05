@@ -1,6 +1,6 @@
 version: 2
 jobs:
-  doxygen:
+  doxygen-gen:
     description: "Generating documention"
     docker:
       - image: comerick/terminal:1.2
@@ -10,9 +10,30 @@ jobs:
           name: Generate
           command: |
               mkdir docs
-              cd docs
+              cd docs/
               doxygen -g Doxyfile
               doxygen Doxyfile
+              ls
+              make html
+      - persist_to_workspace:
+          root: docs/
+          paths: html
+  docs-deploy:
+    docker:
+      - image: node:8.10.0
+    steps:
+      - checkout
+      - attach_workspace:
+          at: docs/
+      - run:
+          name: Install and configure dependencies
+          command: |
+            npm install -g --silent gh-pages@2.0.1
+            git config user.email "comerick11@gmail.com"
+            git config user.name "comerick"
+      - run:
+          name: Deploy docs to gh-pages branch
+          command: gh-pages --dist docs/html
   build_and_test:
     machine:
       image: ubuntu-1604:201903-01
@@ -25,4 +46,11 @@ workflows:
   tasks:
     jobs:
       - build_and_test
-      - doxygen
+      - doxygen-gen
+      - doxygen-deploy
+        requires:
+          - build_and_test
+          - doxygen-gen
+        filters:
+          branches:
+            only: master
