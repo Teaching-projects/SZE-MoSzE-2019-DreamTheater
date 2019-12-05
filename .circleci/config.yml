@@ -16,7 +16,6 @@ jobs:
               ls
               cd html
               ls
-              make html
       - persist_to_workspace:
           root: docs/
           paths: html
@@ -35,7 +34,7 @@ jobs:
             git config user.name "comerick"
       - run:
           name: Deploy docs to gh-pages branch
-          command: gh-pages --dist docs/html
+          command: gh-pages --dist html/
   build_and_test:
     machine:
       image: ubuntu-1604:201903-01
