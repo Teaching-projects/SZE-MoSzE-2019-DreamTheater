@@ -14,6 +14,8 @@ jobs:
               doxygen -g Doxyfile
               doxygen Doxyfile
               ls
+              cd html
+              ls
               make html
       - persist_to_workspace:
           root: docs/
