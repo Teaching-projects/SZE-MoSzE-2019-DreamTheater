@@ -9,13 +9,13 @@ jobs:
       - run:
           name: Generate
           command: |
-              mkdir -p docs/_build
+              mkdir docs
               cd docs/
               doxygen -g Doxyfile
               doxygen Doxyfile
-              make html
+              ls
       - persist_to_workspace:
-          root: docs/_build
+          root: docs/
           paths: html
   docs-deploy:
     docker:
@@ -23,10 +23,7 @@ jobs:
     steps:
       - checkout
       - attach_workspace:
-          at: docs/_build
-      - run:
-        name: Disable jekyll builds
-        command: touch docs/_build/html/.nojekyll
+          at: docs/
       - run:
           name: Install and configure dependencies
           command: |
@@ -35,11 +32,9 @@ jobs:
             git config user.name "comerick"
             ls
             ls
-            cd ..
-            ls
       - run:
           name: Deploy docs to gh-pages branch
-          command: gh-pages --dotfiles --message "[skip ci] Updates" --dist docs/_build/html
+          command: gh-pages --dotfiles --message "[skip ci] Updates" --dist docs/html
   build_and_test:
     machine:
       image: ubuntu-1604:201903-01
