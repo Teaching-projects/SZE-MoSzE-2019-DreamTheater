@@ -6,10 +6,13 @@ jobs:
       - image: comerick/terminal:1.2
     steps:
       - checkout
+      - attach_workspace:
+        at: .
       - run:
           name: Generate
           command: |
               mkdir docs
+              ls
               cd docs/
               doxygen -g Doxyfile
               doxygen Doxyfile
@@ -30,8 +33,6 @@ jobs:
             npm install -g --silent gh-pages@2.0.1
             git config user.email "comerick11@gmail.com"
             git config user.name "comerick"
-            ls
-            cd docs
             ls
       - run:
           name: Deploy docs to gh-pages branch
