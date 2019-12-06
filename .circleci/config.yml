@@ -6,8 +6,6 @@ jobs:
       - image: comerick/terminal:1.2
     steps:
       - checkout
-      - attach_workspace:
-        at: .
       - run:
           name: Generate
           command: |
