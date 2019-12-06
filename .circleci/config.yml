@@ -10,11 +10,9 @@ jobs:
           name: Generate
           command: |
               mkdir docs
-              ls
               cd docs/
               doxygen -g Doxyfile
               doxygen Doxyfile
-              ls
       - persist_to_workspace:
           root: docs/
           paths: html
@@ -23,15 +21,12 @@ jobs:
       - image: node:8.10.0
     steps:
       - checkout
-      - attach_workspace:
-          at: docs/
       - run:
           name: Install and configure dependencies
           command: |
             npm install -g --silent gh-pages@2.0.1
             git config user.email "comerick11@gmail.com"
             git config user.name "comerick"
-            ls
       - run:
           name: Deploy docs to gh-pages branch
           command: gh-pages --dotfiles --message "[skip ci] Updates" --dist docs/html
