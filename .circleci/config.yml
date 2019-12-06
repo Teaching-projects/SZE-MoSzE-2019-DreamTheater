@@ -43,4 +43,10 @@ workflows:
     jobs:
       - build_and_test
       - docs-gen
-      - docs-deploy
+      - docs-deploy:
+        requires:
+          - build_and_test
+          - docs-gen
+        filters:
+          branches:
+            only: master
