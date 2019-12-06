@@ -25,7 +25,7 @@ jobs:
           name: Install and configure dependencies
           command: |
             npm install -g --silent gh-pages@2.0.1
-            git config user.email "comerick11@gmail.com"
+            git config user.email "groferik98@gmail.com"
             git config user.name "comerick"
       - run:
           name: Deploy docs to gh-pages branch
