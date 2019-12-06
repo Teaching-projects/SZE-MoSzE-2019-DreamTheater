@@ -21,9 +21,9 @@ jobs:
       - image: node:8.10.0
     steps:
       - checkout
-        - add_ssh_keys:
-            fingerprints:
-              - "5b:67:f4:ce:ba:b8:a3:53:f3:93:09:a5:df:7b:cc:f4"
+      - add_ssh_keys:
+          fingerprints:
+            - "68:70:04:53:80:5f:60:c3:69:55:31:9b:69:69:44:b9"
       - run:
           name: Install and configure dependencies
           command: |
@@ -47,9 +47,9 @@ workflows:
       - build_and_test
       - docs-gen
       - docs-deploy:
-        requires:
-          - build_and_test
-          - docs-gen
-        filters:
-          branches:
-            only: master
+          requires:
+            - build_and_test
+            - docs-gen
+          filters:
+            branches:
+              only: master
