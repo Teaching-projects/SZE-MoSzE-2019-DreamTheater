@@ -19,8 +19,8 @@ jobs:
           name: Deploy docs to gh-pages branch
           command: gh-pages --dist docs/html
   build_and_test:
-    machine:
-      image: comerick/terminal:1.0
+    docker:
+      - image: comerick/terminal:1.0
     steps:
       - checkout
       - run: g++ -std=c++11 main.cpp Directory.cpp Filesystem.cpp File.cpp
