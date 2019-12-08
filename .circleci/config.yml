@@ -27,8 +27,8 @@ jobs:
       - run: ./a.out < test.txt > output.txt
       - run: doxygen Doxyfile
       - persist_to_workspace:
-        root: docs/
-        paths: html
+          root: docs/
+          paths: html
 workflows:
   version: 2
   tasks:
