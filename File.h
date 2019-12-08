@@ -15,7 +15,6 @@ public:
     File(string fName);
     ~File();
     string getName() const;
-    string getContent() const;
     void setContent(string);
     void setName(string s){name = s;};
 };
