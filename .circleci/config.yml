@@ -1,4 +1,5 @@
-gif version: 2
+
+version: 2
 jobs:
   docs-deploy:
     docker:
@@ -25,7 +26,6 @@ jobs:
       - checkout
       - run: g++ -std=c++11 main.cpp Directory.cpp Filesystem.cpp File.cpp
       - run: ./a.out < test.txt > output.txt
-      - run: cmake -G "Unix Makefiles" && make html
       - run: doxygen Doxyfile
       - persist_to_workspace:
           root: docs/
@@ -38,3 +38,6 @@ workflows:
       - docs-deploy:
           requires:
             - build_and_test
+          filters:
+            branches:
+              only: master

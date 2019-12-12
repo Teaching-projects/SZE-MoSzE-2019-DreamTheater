@@ -3,6 +3,7 @@
 #include <iostream>
 #include <string>
 #include <list>
+#include <vector>
 
 #include "File.h"
 
@@ -10,7 +11,6 @@ using namespace std;
 
 class Directory
 {
-
 private:
     string name;
     Directory* parent;
@@ -28,11 +28,19 @@ public:
     void ls();
     void remove(Directory *);
     void makefolder(string);
+    bool validFileFormat(string);
     File * makeFile(string);
-    void echo(string, string);
+    void addFolder(Directory * f){subFolders.push_back(f);};
+    void addFile(File * f){files.push_back(f);};
+    void echo(string, File *);
     list <Directory *> getSubFolders() const;
+    void setSubFolders(list<Directory *> l){subFolders = l;};
+    void setFiles(list<File *> f){files = f;};
     list <File *> getFiles() const;
     Directory* getParent() const;
+    void setParent(Directory*);
+    void setName(string s){name = s;};
+
 };
 
 #endif // DIRECTORY_H
