@@ -5,7 +5,8 @@
 #include <list>
 #include <vector>
 using namespace std;
-
+    
+    
 class FileSystem
 {
 private:
@@ -15,20 +16,21 @@ private:
 public:
     FileSystem();
     ~FileSystem();
-    string followPath(string, bool);
+    bool loadFile(string);
+    string followPath(string, bool, bool);
+    void mv(string ,string);
     void echo(string, string);
     void rm(string);
     void touch(string);
     void mkdir(string);
     void ls();
     bool cd(string);
-    bool inputCheck(string , vector<string> );
+    bool inputCheck(string , vector<string>, bool );
     Directory* currentDir;
     void start();
     bool hasFile(string);
     bool hasDir(string);
     vector<string> processPath(string);
-    
 };
 
 #endif // FILESYSTEM_H
