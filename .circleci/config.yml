@@ -1,4 +1,4 @@
-version: 2
+gif version: 2
 jobs:
   docs-deploy:
     docker:
@@ -38,6 +38,3 @@ workflows:
       - docs-deploy:
           requires:
             - build_and_test
-          filters:
-            branches:
-              only: master
