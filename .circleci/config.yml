@@ -21,20 +21,28 @@ jobs:
           command: gh-pages --dist docs/html
   build_and_test:
     docker:
+      - image: comerick/tester:1.0
+    steps:
+      - checkout
+      - run: 'make'
+      - run: ./terminal.out < test.txt > output.txt
+      - run: 'diff output.txt testresult.txt'
+  doxygen:
+    docker:
       - image: comerick/terminal:1.0
     steps:
       - checkout
-      - run: g++ -std=c++11 main.cpp Directory.cpp Filesystem.cpp File.cpp
-      - run: ./a.out < test.txt > output.txt
       - run: doxygen Doxyfile
       - persist_to_workspace:
           root: docs/
           paths: html
+
 workflows:
   version: 2
   tasks:
     jobs:
       - build_and_test
+      - doxygen
       - docs-deploy:
           requires:
             - build_and_test
