@@ -43,3 +43,4 @@ workflows:
       - docs-deploy:
           requires:
             - build_and_test
+            - doxygen
