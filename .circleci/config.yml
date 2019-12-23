@@ -14,15 +14,25 @@ jobs:
     steps:
       - checkout
       - run: doxygen Doxyfile
-      - run: ls
-      - run: make docs/latex/.
-      - run: ls docs/latex/
+      - persist_to_workspace:
+          root: docs/
+          paths: 
+            - latex
+  saveDocs:
+    docker:
+      - image: comerick/tester:1.0
+    steps:
+      - checkout
+      - attach_workspace:
+          at: docs/
+      - run: 'cd docs && make -C latex/.'
       - store_artifacts:
           path: docs/latex/refman.pdf
-          destination: doc.pdf
+          destination: docs.pdf
 workflows:
   version: 2
   tasks:
     jobs:
       - build_and_test
       - doxygen
+      -
