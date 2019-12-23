@@ -26,7 +26,6 @@ jobs:
       - checkout
       - run: 'make'
       - run: ./terminal < test.txt > output.txt
-      - run: 'diff output.txt testresult.txt'
   doxygen:
     docker:
       - image: comerick/terminal:1.0
