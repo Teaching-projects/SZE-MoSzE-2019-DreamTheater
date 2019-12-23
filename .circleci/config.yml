@@ -33,7 +33,8 @@ jobs:
       - checkout
       - run: doxygen Doxyfile
       - persist_to_workspace:
-          path: docs/html
+          root: docs/
+          path: html
 workflows:
   version: 2
   tasks:
