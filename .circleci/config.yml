@@ -25,7 +25,7 @@ jobs:
     steps:
       - checkout
       - run: 'make'
-      - run: ./terminal.out < test.txt > output.txt
+      - run: ./terminal < test.txt > output.txt
       - run: 'diff output.txt testresult.txt'
   doxygen:
     docker:
