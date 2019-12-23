@@ -18,8 +18,8 @@ jobs:
             git config user.name "Comerick"
       - run: ls
       - run: cd docs
-      - run: ls
-      - run: cd ..
+      - run: ls docs/
+      - run: ls docs/html
       - run:
           name: Deploy docs to gh-pages branch
           command: gh-pages --dist docs/html
