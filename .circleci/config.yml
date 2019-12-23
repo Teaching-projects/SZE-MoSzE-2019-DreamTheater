@@ -34,7 +34,7 @@ jobs:
       - checkout
       - run: doxygen Doxyfile
       - store_artifacts:
-          paths: docs/html/index.html
+          path: docs/html/index.html
           destination: index.html
 
 workflows:
