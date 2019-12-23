@@ -14,7 +14,9 @@ jobs:
     steps:
       - checkout
       - run: doxygen Doxyfile
-      - run: cd docs/latex && make
+      - run: ls
+      - run: make docs/latex/.
+      - run: ls docs/latex/
       - store_artifacts:
           path: docs/latex/refman.pdf
           destination: doc.pdf
