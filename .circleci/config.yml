@@ -25,7 +25,7 @@ jobs:
       - checkout
       - attach_workspace:
           at: docs/
-      - run: 'cd docs/html && make'
+      - run: 'cd docs/latex && make'
       - run: ls docs/latex/
       - store_artifacts:
           path: docs/latex/refman.pdf
