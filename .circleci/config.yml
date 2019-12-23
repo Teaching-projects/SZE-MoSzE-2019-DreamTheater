@@ -18,6 +18,7 @@ jobs:
             git config user.name "Comerick"
       - run:
           name: Deploy docs to gh-pages branch
+          command: cd docs && ls && cd ..
           command: gh-pages --dist docs/html
   build_and_test:
     docker:
@@ -32,9 +33,9 @@ jobs:
     steps:
       - checkout
       - run: doxygen Doxyfile
-      - persist_to_workspace:
-          root: docs/
-          paths: html
+      - store_artifacts:
+          paths: docs/html/index.html
+          destination: index.html
 
 workflows:
   version: 2
