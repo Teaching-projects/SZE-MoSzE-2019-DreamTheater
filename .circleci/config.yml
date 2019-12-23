@@ -7,7 +7,7 @@ jobs:
     steps:
       - checkout
       - attach_workspace:
-          at: docs/html
+          at: docs/
       - add_ssh_keys:
           fingerprints:
             - "68:70:04:53:80:5f:60:c3:69:55:31:9b:69:69:44:b9"
@@ -16,6 +16,7 @@ jobs:
           command: |
             git config user.email "groferik98@gmail.com"
             git config user.name "Comerick"
+      - run: ls docs/
       - run:
           name: Deploy docs to gh-pages branch
           command: gh-pages --dist docs/html
@@ -32,9 +33,10 @@ jobs:
     steps:
       - checkout
       - run: doxygen Doxyfile
+      - run: ls docs/
       - persist_to_workspace:
           root: docs/
-          path: html
+          paths: html
 workflows:
   version: 2
   tasks:
