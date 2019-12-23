@@ -1,8 +1,13 @@
-FROM ubuntu:18.04 AS terminal
-RUN apt-get update && apt-get install -y\    
-    g++\
+FROM debian AS doxy
+RUN apt-get update && apt-get install -y\
     git\
-    doxygen
+    doxygen\
+    texlive\
+    texlive-latex-extra\
+    texlive-lang-european\
+    texlive-lang-cyrillic\
+    make\
+    && apt-get autoclean
 
 FROM ubuntu:18.04 AS tester
 RUN apt-get update && apt-get install -y\
@@ -19,9 +24,6 @@ RUN cmake .. && make && make install \
 
 FROM ubuntu:18.04 AS checker
 RUN apt-get update && apt-get install -y\
-      g++\
+      git\
       cppcheck\
       valgrind
-
-FROM node:8.10.0 AS doxydeploy
-RUN npm install -g --silent gh-pages@2.0.1   

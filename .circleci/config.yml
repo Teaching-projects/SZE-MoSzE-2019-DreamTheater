@@ -10,23 +10,11 @@ jobs:
       - run: ./terminal < test.txt > output.txt
   doxygen:
     docker:
-      - image: comerick/terminal:1.0
+      - image: comerick/doxy:1.0
     steps:
       - checkout
       - run: doxygen Doxyfile
-      - persist_to_workspace:
-          root: docs/
-          paths: 
-            - latex
-  saveDocs:
-    docker:
-      - image: comerick/tester:1.0
-    steps:
-      - checkout
-      - attach_workspace:
-          at: docs/
       - run: 'cd docs/latex && make'
-      - run: ls docs/latex/
       - store_artifacts:
           path: docs/latex/refman.pdf
           destination: docs.pdf
@@ -36,6 +24,3 @@ workflows:
     jobs:
       - build_and_test
       - doxygen
-      - saveDocs:
-          requires:
-            - doxygen
