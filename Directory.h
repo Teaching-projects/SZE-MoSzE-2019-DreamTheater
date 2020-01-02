@@ -18,8 +18,6 @@ private:
     list <File*> files;
     
 public:
-    bool noSubfolder();
-    bool noFile();
     Directory(string,Directory*);
     ~Directory();
     string getName() const;
@@ -30,16 +28,16 @@ public:
     void makefolder(string);
     bool validFileFormat(string);
     File * makeFile(string);
-    void addFolder(Directory * f){subFolders.push_back(f);};
-    void addFile(File * f){files.push_back(f);};
+    void addFolder(Directory * f){ subFolders.push_back(f); };
+    void addFile(File * f){ files.push_back(f); };
     void echo(string, File *);
     list <Directory *> getSubFolders() const;
-    void setSubFolders(list<Directory *> l){subFolders = l;};
-    void setFiles(list<File *> f){files = f;};
+    void setSubFolders(list<Directory *> l){ subFolders = l; };
+    void setFiles(list<File *> f){ files = f; };
     list <File *> getFiles() const;
     Directory* getParent() const;
     void setParent(Directory*);
-    void setName(string s){name = s;};
+    void setName(string s){ name = s; };
 
 };
 
